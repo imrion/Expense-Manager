@@ -1,18 +1,19 @@
+{% load static%}
 <!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Expense Tracker</title>
-    <link rel="stylesheet" href="css/bootstrap.min.css">
-    <link rel="stylesheet" href="css/animate.min.css">
+    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/animate.min.css' %}">
   </head>
   <body class="bg-light">
     <!-- Navbar -->
     <nav class="navbar navbar-expand-lg fixed-top bg-dark navbar-dark">
       <div class="container">
         <a class="navbar-brand fw-bold text-white" href="/">
-          <img style="width:100px;" src="img/django.png">
+          <img style="width:100px;" src="{% static 'img/django.png' %}">
         </a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
           <span class="navbar-toggler-icon"></span>
@@ -49,11 +50,12 @@
     <!-- Main Content -->
     <div class="container mt-5">
       <br/><br/><br/>
-      
-      
+      {% block content %}
+        
+      {% endblock %}
     </div>
 
-    <script src="js/bootstrap.bundle.min.js"></script>
-    <script src="js/main.js"></script>
+    <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
+    <script src="{% static 'js/main.js' %}"></script>
   </body>
 </html>

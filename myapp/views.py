@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.http import JsonResponse, HttpResponse
 # Create your views here.
 
@@ -7,7 +7,7 @@ def user_login(request):
     return render(request,'login.html',)
 
 def user_logout(request):
-    pass
+    return redirect('login')
 
 def user_register(request):
     return render(request,'register.html')
@@ -38,6 +38,8 @@ def expense_list(request):
 def expense_create(request):
     return render(request,'expense_form.html')
 
-
 def expense_update(request):
     return render(request,'expense_form.html')
+
+def expense_delete(request):
+    return render(request,'expense_confirm_delete.html')

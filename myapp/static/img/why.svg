@@ -1,0 +1,44 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="737.137" height="689.597" viewBox="0 0 737.137 689.597">
+  <g id="Group_102" data-name="Group 102" transform="translate(-3978.637 -703.5)">
+    <g id="Group_18" data-name="Group 18" transform="translate(10251.774 2579.5)">
+      <circle id="Ellipse_22" data-name="Ellipse 22" cx="287" cy="287" r="287" transform="translate(-6110 -1876)" fill="#40c199" opacity="0.08"/>
+      <g id="Group_17" data-name="Group 17">
+        <circle id="Ellipse_6" data-name="Ellipse 6" cx="74.493" cy="74.493" r="74.493" transform="translate(-6155.981 -1739.715)" fill="none" stroke="rgba(32,180,134,0.25)" stroke-width="1"/>
+        <circle id="Ellipse_7" data-name="Ellipse 7" cx="122.174" cy="122.174" r="122.174" transform="translate(-6203.2 -1786.933)" fill="none" stroke="rgba(32,180,134,0.25)" stroke-width="1"/>
+        <circle id="Ellipse_8" data-name="Ellipse 8" cx="158.745" cy="158.745" r="158.745" transform="translate(-6240.232 -1823.967)" fill="none" stroke="rgba(32,180,134,0.25)" stroke-width="1"/>
+        <circle id="Ellipse_9" data-name="Ellipse 9" cx="191.149" cy="191.149" r="191.149" transform="translate(-6272.637 -1856.371)" fill="none" stroke="rgba(32,180,134,0.25)" stroke-width="1"/>
+        <circle id="Ellipse_10" data-name="Ellipse 10" cx="74.493" cy="74.493" r="74.493" transform="translate(-5849.342 -1452.545)" fill="none" stroke="rgba(32,180,134,0.25)" stroke-width="1"/>
+        <circle id="Ellipse_11" data-name="Ellipse 11" cx="122.174" cy="122.174" r="122.174" transform="translate(-5896.561 -1499.764)" fill="none" stroke="rgba(32,180,134,0.25)" stroke-width="1"/>
+        <circle id="Ellipse_12" data-name="Ellipse 12" cx="158.745" cy="158.745" r="158.745" transform="translate(-5933.593 -1536.798)" fill="none" stroke="rgba(32,180,134,0.25)" stroke-width="1"/>
+        <circle id="Ellipse_13" data-name="Ellipse 13" cx="191.149" cy="191.149" r="191.149" transform="translate(-5965.998 -1569.201)" fill="none" stroke="rgba(32,180,134,0.25)" stroke-width="1"/>
+        <rect id="Rectangle_9" data-name="Rectangle 9" width="604.76" height="586.507" rx="20" transform="translate(-6201.344 -1830.101)" fill="rgba(255,255,255,0.45)"/>
+        <g id="Group_11" data-name="Group 11" transform="translate(-6479 -2053)" opacity="0.85">
+          <rect id="Rectangle_10" data-name="Rectangle 10" width="508.631" height="97.346" rx="17" transform="translate(315.377 647.569)" fill="rgba(255,255,255,0.8)"/>
+          <circle id="Ellipse_16" data-name="Ellipse 16" cx="30.421" cy="30.421" r="30.421" transform="translate(359.182 665.821)" fill="rgba(34,185,138,0.12)"/>
+          <path id="Path_7" data-name="Path 7" d="M381.882,700.832a4.175,4.175,0,0,1-2.5-.768,5.094,5.094,0,0,1-1.68-2.16,9.118,9.118,0,0,1,0-6.464,5,5,0,0,1,1.664-2.144,4.466,4.466,0,0,1,5.008,0,5.08,5.08,0,0,1,1.68,2.16,7.887,7.887,0,0,1,.608,3.216,8,8,0,0,1-.608,3.232,5.1,5.1,0,0,1-1.664,2.16A4.2,4.2,0,0,1,381.882,700.832Zm.016-1.984a2.059,2.059,0,0,0,1.392-.5,3.206,3.206,0,0,0,.88-1.44,6.979,6.979,0,0,0,.32-2.24,6.833,6.833,0,0,0-.32-2.224,3.031,3.031,0,0,0-.9-1.44,2.081,2.081,0,0,0-1.408-.5,2.038,2.038,0,0,0-1.376.5,3.219,3.219,0,0,0-.9,1.44,7.206,7.206,0,0,0-.3,2.224,7.3,7.3,0,0,0,.3,2.224,3.334,3.334,0,0,0,.9,1.44,2.084,2.084,0,0,0,1.408.512Zm12.016,1.792v-2.624h-5.472v-1.824l5.344-7.472h2.272v7.472H397.8v1.824h-1.744v2.624h-2.144Zm-3.872-3.664-.384-.784h4.256v-5.76l.56.176Z" fill="#22b98a"/>
+        </g>
+        <g id="Group_13" data-name="Group 13" transform="translate(-6479 -2053)" opacity="0.85">
+          <rect id="Rectangle_11" data-name="Rectangle 11" width="508.631" height="97.346" rx="17" transform="translate(315.377 529.538)" fill="rgba(255,255,255,0.8)"/>
+          <circle id="Ellipse_17" data-name="Ellipse 17" cx="30.421" cy="30.421" r="30.421" transform="translate(359.182 547.789)" fill="rgba(34,185,138,0.12)"/>
+          <path id="Path_13" data-name="Path 13" d="M383.1,582.8a4.175,4.175,0,0,1-2.5-.768,5.078,5.078,0,0,1-1.68-2.16,9.118,9.118,0,0,1,0-6.464,4.988,4.988,0,0,1,1.664-2.144,4.466,4.466,0,0,1,5.008,0,5.078,5.078,0,0,1,1.68,2.16,7.91,7.91,0,0,1,.608,3.216,8.019,8.019,0,0,1-.608,3.232,5.092,5.092,0,0,1-1.664,2.16,4.2,4.2,0,0,1-2.508.768Zm.016-1.984a2.059,2.059,0,0,0,1.392-.5,3.214,3.214,0,0,0,.88-1.44,7.006,7.006,0,0,0,.32-2.24,6.858,6.858,0,0,0-.32-2.224,3.039,3.039,0,0,0-.9-1.44,2.086,2.086,0,0,0-1.408-.5,2.043,2.043,0,0,0-1.376.5,3.209,3.209,0,0,0-.9,1.44,7.175,7.175,0,0,0-.3,2.224,7.265,7.265,0,0,0,.3,2.224,3.326,3.326,0,0,0,.9,1.44,2.08,2.08,0,0,0,1.408.512Zm10.656,1.984a4.948,4.948,0,0,1-1.856-.352,4.4,4.4,0,0,1-1.488-1.024,3.611,3.611,0,0,1-.832-1.584l1.9-.672a2.54,2.54,0,0,0,.88,1.248,2.588,2.588,0,0,0,2.5.176,1.8,1.8,0,0,0,.752-.688,2.1,2.1,0,0,0,.272-1.088,1.938,1.938,0,0,0-.272-1.056,1.7,1.7,0,0,0-.736-.688,2.51,2.51,0,0,0-1.136-.24,3.477,3.477,0,0,0-.64.064,2.319,2.319,0,0,0-.576.192l-.5-1.04,3.088-3.52h-4.864v-1.84h7.312V572.4l-3.1,3.632.032-.816a3.9,3.9,0,0,1,1.872.464,3.22,3.22,0,0,1,1.248,1.232,3.643,3.643,0,0,1,.448,1.84,3.94,3.94,0,0,1-.56,2.08,3.99,3.99,0,0,1-1.536,1.44,4.562,4.562,0,0,1-2.208.528Z" fill="#22b98a"/>
+        </g>
+        <g id="Group_15" data-name="Group 15" transform="translate(-6479 -2053)" opacity="0.85">
+          <rect id="Rectangle_12" data-name="Rectangle 12" width="508.631" height="97.346" rx="17" transform="translate(315.377 411.506)" fill="rgba(255,255,255,0.8)"/>
+          <circle id="Ellipse_18" data-name="Ellipse 18" cx="30.421" cy="30.421" r="30.421" transform="translate(359.182 429.758)" fill="rgba(34,185,138,0.12)"/>
+          <path id="Path_19" data-name="Path 19" d="M376.906,457.753c0,3.616,1.84,6.032,4.944,6.032s4.96-2.416,4.96-6.032c0-3.632-1.968-6.1-4.96-6.1S376.906,454.121,376.906,457.753Zm2.016,0c0-2.768,1.088-4.288,2.928-4.288,1.856,0,2.944,1.52,2.944,4.288,0,2.7-1.088,4.224-2.944,4.224C380.01,461.977,378.922,460.457,378.922,457.753Zm17.746,5.808v-1.9H391.8l2.112-1.808c1.776-1.52,2.672-2.752,2.672-4.384,0-2.368-1.552-3.792-4.048-3.792a3.939,3.939,0,0,0-4.128,4.224h2.032c.016-1.5.816-2.4,2.1-2.4a1.839,1.839,0,0,1,1.952,2.08c0,1.12-.528,1.888-2.112,3.232l-3.824,3.232v1.536Z" fill="#22b98a"/>
+        </g>
+        <g id="Group_16" data-name="Group 16" transform="translate(-6479 -2053)">
+          <rect id="Rectangle_13" data-name="Rectangle 13" width="508.631" height="97.346" rx="17" transform="translate(337.28 288.607)" fill="#fff"/>
+          <circle id="Ellipse_19" data-name="Ellipse 19" cx="30.421" cy="30.421" r="30.421" transform="translate(381.085 306.859)" fill="rgba(34,185,138,0.12)"/>
+          <path id="Path_25" data-name="Path 25" d="M401.243,334.854c0,3.616,1.84,6.032,4.944,6.032s4.96-2.416,4.96-6.032c0-3.632-1.968-6.1-4.96-6.1S401.243,331.222,401.243,334.854Zm2.016,0c0-2.768,1.088-4.288,2.928-4.288,1.856,0,2.944,1.52,2.944,4.288,0,2.7-1.088,4.224-2.944,4.224C404.347,339.078,403.259,337.558,403.259,334.854Zm12-4.032v9.856h1.968v-11.7H412.7v1.84h2.56Z" fill="#22b98a"/>
+        </g>
+        <circle id="Ellipse_20" data-name="Ellipse 20" cx="21.903" cy="21.903" r="21.903" transform="translate(-5618.488 -1663.397)" fill="#fff"/>
+        <circle id="Ellipse_21" data-name="Ellipse 21" cx="16.427" cy="16.427" r="16.427" transform="translate(-6212.296 -1289.833)" fill="#fff"/>
+      </g>
+    </g>
+    <text id="ইন্ডাস্ট্রি_স্ট্যান্ডার্ড_লার্নিং" data-name="ইন্ডাস্ট্রি স্ট্যান্ডার্ড লার্নিং" transform="translate(4229.774 871)" fill="#2c334f" font-size="24" font-family="HindSiliguri-SemiBold, Hind Siliguri" font-weight="600"><tspan x="0" y="0">Lorem Ipsum is simply dummy</tspan></text>
+    <text id="তথ্যবহুল_লার্নিং_ম্যাটেরিয়াল" data-name="তথ্যবহুল লার্নিং ম্যাটেরিয়াল" transform="translate(4211.774 1115)" fill="#2c334f" font-size="24" font-family="HindSiliguri-SemiBold, Hind Siliguri" font-weight="600"><tspan x="0" y="0">Lorem Ipsum is simply dummy</tspan></text>
+    <text id="বাস্তবমুখী_দিক_নির্দেশনা" data-name="বাস্তবমুখী দিক নির্দেশনা" transform="translate(4211.774 993)" fill="#2c334f" font-size="24" font-family="HindSiliguri-SemiBold, Hind Siliguri" font-weight="600"><tspan x="0" y="0">Lorem Ipsum is simply dummy</tspan></text>
+    <text id="কমিউনিটি_কন্ট্রিবিউশন_এবং_সাপোর্ট" data-name="কমিউনিটি কন্ট্রিবিউশন এবং সাপোর্ট" transform="translate(4202.774 1230)" fill="#2c334f" font-size="24" font-family="HindSiliguri-SemiBold, Hind Siliguri" font-weight="600"><tspan x="0" y="0">Lorem Ipsum is simply dummy</tspan></text>
+  </g>
+</svg>

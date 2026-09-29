@@ -1,0 +1,47 @@
+
+
+<div class="container d-flex justify-content-center">
+    <div class="col-md-6">
+        <div class="card animated zoomIn border-0  rounded-3 p-5">
+            <h2 class="fw-bold text-center text-dark">
+                Update ExpenseAdd Expense
+            </h2>
+
+            <form method="POST" class="d-grid gap-3">
+                
+                
+                <div>
+                    <label class="form-label fw-medium">Category</label>
+                    <select name="category" class="form-select rounded-3">
+                        <option value="">Select Category</option>
+                        
+                            <option value="" 
+                                selected>
+                                
+                            </option>
+                        
+                    </select>
+                </div>
+                
+                <div>
+                    <label class="form-label fw-medium">Amount</label>
+                    <input type="number" name="amount" class="form-control rounded-3" 
+                        value="" required>
+                </div>
+
+                <div>
+                    <label class="form-label fw-medium">Description</label>
+                    <textarea rows="4" name="description" class="form-control rounded-3"></textarea>
+                </div>
+
+                <div class="d-grid gap-2">
+                    <button type="submit" class="btn btn-dark rounded-3  fw-medium">
+                        UpdateSave
+                    </button>
+                    <a href="" class="btn btn-outline-dark rounded-3  fw-medium">Cancel</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+

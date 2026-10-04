@@ -12,11 +12,21 @@
             <div class="card-body px-5">
                 
                     
-                        <div class="alert alert-danger rounded-3"></div>
+                    {% if messages%}
+                        {% for message in messages%}
+                            {% if message.tags == "error" %}
+                                <div class="alert alert-danger rounded-3">{{ message }}</div>
+                            {% endif %}
+                            {% if message.tags == "success" %}
+                                <div class="alert alert-success rounded-3">{{ message }}</div>
+                            {% endif %}
+                        {% endfor %}
+                    {% endif %}
                     
                 
 
                 <form method="POST" class="d-grid gap-3">
+                    {% csrf_token %}
                     
                     <div>
                         <label class="form-label fw-medium">Username</label>

@@ -20,28 +20,30 @@
         </button>
         <div class="collapse navbar-collapse" id="navbarNav">
           <ul class="navbar-nav ms-auto gap-2">
-            
+            {% if user.is_authenticated%}
               <li class="nav-item">
-                <a class="nav-link text-white fw-medium" href="">EXPENSES</a>
+                <a class="nav-link text-white fw-medium" href="{% url 'expense_list' %}">EXPENSES</a>
               </li>
               <li class="nav-item">
-                <a class="nav-link text-white fw-medium" href="">ADD EXPENSE</a>
+                <a class="nav-link text-white fw-medium" href="{% url 'expense_create' %}">ADD EXPENSE</a>
               </li>
               <li class="nav-item">
-                <a class="nav-link text-white btn btn-danger px-3 rounded-3 " href="">
+                <a class="nav-link text-white btn btn-danger px-3 rounded-3 " href="{% url 'logout' %}">
                   LOGOUT
                 </a>
               </li>
-            
+            {% else %}
               <li class="nav-item">
-                <a class="nav-link  text-white fw-medium" href="">LOGIN</a>
+                <a class="nav-link  text-white fw-medium" href="{% url 'login' %}">
+                  LOGIN
+                </a>
               </li>
               <li class="nav-item">
-                <a class="nav-link text-white btn btn-secondary px-3 rounded-3 shadow-sm" href="">
+                <a class="nav-link text-white btn btn-secondary px-3 rounded-3 shadow-sm" href="{% url 'register' %}">
                   REGISTER
                 </a>
               </li>
-            
+            {% endif %}
           </ul>
         </div>
       </div>

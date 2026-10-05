@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect
 from django.http import JsonResponse, HttpResponse
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 
 # Create your views here.
@@ -25,8 +26,9 @@ def user_login(request):
         "login.html",
     )
 
-
+@login_required
 def user_logout(request):
+    logout(request)
     return redirect("login")
 
 
@@ -76,21 +78,22 @@ def password_reset_complete(request):
 
 
 # base template
+@login_required
 def home(request):
     return render(request, "home.html")
 
-
+@login_required
 def expense_list(request):
     return render(request, "expense_list.html")
 
-
+@login_required
 def expense_create(request):
     return render(request, "expense_form.html")
 
-
+@login_required
 def expense_update(request):
     return render(request, "expense_form.html")
 
-
+@login_required
 def expense_delete(request):
     return render(request, "expense_confirm_delete.html")

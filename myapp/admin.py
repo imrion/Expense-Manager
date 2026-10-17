@@ -2,5 +2,15 @@ from django.contrib import admin
 from .models import Categories, Expense
 # Register your models here.
 
-admin.site.register(Categories)
-admin.site.register(Expense)
+
+@admin.register(Categories)
+class categoryadmin(admin.ModelAdmin):
+    list_display =['id','name']
+    search_fields = ['name']
+    ordering = ['name']
+
+@admin.register(Expense)
+class Expenseadmin(admin.ModelAdmin):
+    list_display =['id','amount','category__name','user__username','description','date']
+    search_fields = ['id']
+    ordering = ['-date']

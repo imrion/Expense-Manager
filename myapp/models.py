@@ -5,6 +5,9 @@ from django.contrib.auth.models import User
 class Categories(models.Model):
     name = models.CharField(100,null=False,blank=False)
 
+    def __str__(self):
+        return self.name
+
 class Expense(models.Model):
     user = models.ForeignKey(User,on_delete=models.CASCADE)
     category = models.ForeignKey(Categories,on_delete=models.SET_NULL,null=True)

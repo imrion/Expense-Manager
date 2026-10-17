@@ -3,7 +3,9 @@ from django.http import JsonResponse, HttpResponse
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
+from .models import Categories, Expense
 from django.contrib import messages
+from django.db.models import Sum
 
 # Create your views here.
 
@@ -80,7 +82,13 @@ def password_reset_complete(request):
 # base template
 @login_required
 def home(request):
-    return render(request, "home.html")
+    result = Expense.objects.filter(user=request.user).values(
+        'category__name').annotate(
+            total=Sum('amount'))
+    context = {
+        "result":list(result)
+    }
+    return render(request,'home.html',context)
 
 @login_required
 def expense_list(request):

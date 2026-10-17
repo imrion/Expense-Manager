@@ -92,16 +92,20 @@ def home(request):
 
 @login_required
 def expense_list(request):
-    return render(request, "expense_list.html")
+    data = Expense.objects.filter(user=request.user).select_related('category').order_by('-date')
+    context ={
+        "data":data
+    }
+    return render(request,'expense_list.html',context)
 
 @login_required
 def expense_create(request):
     return render(request, "expense_form.html")
 
 @login_required
-def expense_update(request):
+def expense_update(request,expense_id):
     return render(request, "expense_form.html")
 
 @login_required
-def expense_delete(request):
+def expense_delete(request,expense_id):
     return render(request, "expense_confirm_delete.html")

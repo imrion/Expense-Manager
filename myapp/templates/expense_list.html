@@ -5,13 +5,8 @@
 <div class="container mt-5">
     <div class="card border-0  rounded-4 p-4">
         <h4 class="fw-bold text-dark mb-4">Expense List</h4>
-        
-        
-            
-                <div class="alert alert-success rounded-3 "></div>
-            
-        
-
+              
+        {% if data %}
         <div class="table-responsive">
             <table class="table table-hover align-middle rounded-3">
                 <thead class="bg-dark text-white">
@@ -25,20 +20,25 @@
                 </thead>
                 <tbody>
                     
+                    {% for expenses in data  %}
                         <tr class="border-bottom animated slideInUp">
-                            <td></td>
-                            <td></td>
-                            <td>$</td>
-                            <td></td>
+                            <td>{{ expenses.date }}</td>
+                            <td>{{ expenses.category.name | default:"Uncategorised" }}</td>
+                            <td>${{ expenses.amount|floatformat:2 }}</td>
+                            <td>{{ expenses.description }}</td>
                             <td class="text-center">
-                                <a href="" class="btn btn-sm btn-primary rounded-3 ">Edit</a>
-                                <a href="" class="btn btn-sm btn-danger rounded-3 ">Delete</a>
+                                <a href="{% url 'expense_update' expenses.id %}" class="btn btn-sm btn-primary rounded-3 ">Edit</a>
+                                <a href="{% url 'expense_delete' expenses.id %}" class="btn btn-sm btn-danger rounded-3 ">Delete</a>
                             </td>
                         </tr>
-                    
+                    {% endfor %}
+                    {% else %}
                         <tr>
                             <td colspan="5" class="text-center text-muted">No expenses found.</td>
                         </tr>
+                    {% endif %}
+                    
+                        
                     
                 </tbody>
             </table>

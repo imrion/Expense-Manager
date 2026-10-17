@@ -108,4 +108,12 @@ def expense_update(request,expense_id):
 
 @login_required
 def expense_delete(request,expense_id):
-    return render(request, "expense_confirm_delete.html")
+    data = Expense.objects.get(user=request.user,id=expense_id)
+    if request.method == "POST":
+        data.delete()
+        messages.success(request,"Expense delete successfully")
+        return redirect('expense_list')
+    context={
+        "data":data
+    }
+    return render(request, "expense_confirm_delete.html",context)

@@ -20,7 +20,7 @@ def user_login(request):
         # if authinticate then user.username, user.password create hobe
         if user is not None:
             login(request, user)
-            return redirect('home')
+            return redirect("home")
         else:
             messages.error(request, "Invalid username or passward")
     return render(
@@ -28,7 +28,8 @@ def user_login(request):
         "login.html",
     )
 
-@login_required
+
+@login_required(login_url="/login/")
 def user_logout(request):
     logout(request)
     return redirect("login")
@@ -80,40 +81,70 @@ def password_reset_complete(request):
 
 
 # base template
-@login_required
+@login_required(login_url="/login/")
 def home(request):
-    result = Expense.objects.filter(user=request.user).values(
-        'category__name').annotate(
-            total=Sum('amount'))
+    result = (
+        Expense.objects.filter(user=request.user)
+        .values("category__name")
+        .annotate(total=Sum("amount"))
+    )
+    grand_total = Expense.objects.filter(
+        user=request.user
+    ).aggregate(total=Sum("amount"))["total"] or 0
     context = {
-        "result":list(result)
+        "result": result,
+        "grand_total": grand_total,
     }
-    return render(request,'home.html',context)
+    return render(request, "home.html", context)
 
-@login_required
+
+@login_required(login_url="/login/")
 def expense_list(request):
-    data = Expense.objects.filter(user=request.user).select_related('category').order_by('-date')
-    context ={
-        "data":data
-    }
-    return render(request,'expense_list.html',context)
+    data = (
+        Expense.objects.filter(user=request.user)
+        .select_related("category")
+        .order_by("-date")
+    )
+    context = {"data": data}
+    return render(request, "expense_list.html", context)
 
-@login_required
+
+@login_required(login_url="/login/")
 def expense_create(request):
-    return render(request, "expense_form.html")
+    category = Categories.objects.all()
+    if request.method == "POST":
+        category_id = request.POST.get("category")
+        amount = request.POST.get("amount")
+        description = request.POST.get("description")
+        if not category_id:
+            messages.error(request, "please select a category")
+            return redirect("expense_create")
+        Expense.objects.create(
+            user=request.user,
+            category_id=category_id,
+            amount=amount,
+            description=description,
+        )
+        messages.success(request, "Expense created successfully")
+        return redirect("expense_list")
+    context = {"category": category}
+    return render(request, "expense_form.html", context)
 
-@login_required
-def expense_update(request,expense_id):
-    return render(request, "expense_form.html")
 
-@login_required
-def expense_delete(request,expense_id):
-    data = Expense.objects.get(user=request.user,id=expense_id)
+@login_required(login_url="/login/")
+def expense_update(request, expense_id):
+    category = Categories.objects.all()
+    expense = Expense.objects.get(user=request.user, id=expense_id)
+    context = {"category": category, "expense": expense}
+    return render(request, "expense_form.html", context)
+
+
+@login_required(login_url="/login/")
+def expense_delete(request, expense_id):
+    data = Expense.objects.get(user=request.user, id=expense_id)
     if request.method == "POST":
         data.delete()
-        messages.success(request,"Expense delete successfully")
-        return redirect('expense_list')
-    context={
-        "data":data
-    }
-    return render(request, "expense_confirm_delete.html",context)
+        messages.success(request, "Expense delete successfully")
+        return redirect("expense_list")
+    context = {"data": data}
+    return render(request, "expense_confirm_delete.html", context)

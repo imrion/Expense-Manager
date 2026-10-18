@@ -23,7 +23,10 @@
                                 <td class="text-end">${{ item.total|floatformat:2 }}</td>
                             </tr>
                         {% endfor %}
-                    
+                            <tr>
+                                <td class="fw-bold">Grand Total</td>
+                                <td class="text-end fw-bold">${{ grand_total|floatformat:2 }}</td>
+                            </tr>
                     </tbody>
                 </table>
             </div>

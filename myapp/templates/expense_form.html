@@ -39,7 +39,7 @@
                 <div>
                     <label class="form-label fw-medium">Amount</label>
                     <input type="number" name="amount" class="form-control rounded-3" 
-                        value="" required>
+                        value="{{ expense.amount|default:'' }}" required>
                 </div>
 
                 <div>

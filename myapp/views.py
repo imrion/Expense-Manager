@@ -29,7 +29,7 @@ def user_login(request):
     )
 
 
-@login_required(login_url="/login/")
+@login_required(login_url="login")
 def user_logout(request):
     logout(request)
     return redirect("login")
@@ -81,7 +81,7 @@ def password_reset_complete(request):
 
 
 # base template
-@login_required(login_url="/login/")
+@login_required(login_url="login")
 def home(request):
     result = (
         Expense.objects.filter(user=request.user)
@@ -98,7 +98,7 @@ def home(request):
     return render(request, "home.html", context)
 
 
-@login_required(login_url="/login/")
+@login_required(login_url="login")
 def expense_list(request):
     data = (
         Expense.objects.filter(user=request.user)
@@ -109,7 +109,7 @@ def expense_list(request):
     return render(request, "expense_list.html", context)
 
 
-@login_required(login_url="/login/")
+@login_required(login_url="login")
 def expense_create(request):
     category = Categories.objects.all()
     if request.method == "POST":
@@ -131,15 +131,42 @@ def expense_create(request):
     return render(request, "expense_form.html", context)
 
 
-@login_required(login_url="/login/")
+@login_required(login_url="login")
 def expense_update(request, expense_id):
+    data = Expense.objects.get(user = request.user, id=expense_id)
+    if request.method == "POST":
+        category_id = request.POST.get('category')
+        amount = request.POST.get('amount')
+        description = request.POST.get('description')
+
+        if not category_id:
+            messages.error(request, "Please select a category")
+            return redirect("expense_update", expense_id=data.id)
+
+        if not amount:
+            messages.error(request, "Please add amount")
+            return redirect("expense_update", expense_id=data.id)
+
+        if not description:
+            messages.error(request, "Please add description")
+            return redirect("expense_update", expense_id=data.id)
+
+        data.category_id=category_id
+        data.amount= amount
+        data.description = description
+        data.save()
+
+        messages.success(request, "Expense updated successfully!")
+        return redirect("expense_list")
+        
+        
     category = Categories.objects.all()
     expense = Expense.objects.get(user=request.user, id=expense_id)
     context = {"category": category, "expense": expense}
     return render(request, "expense_form.html", context)
 
 
-@login_required(login_url="/login/")
+@login_required(login_url="login")
 def expense_delete(request, expense_id):
     data = Expense.objects.get(user=request.user, id=expense_id)
     if request.method == "POST":

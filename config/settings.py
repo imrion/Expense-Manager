@@ -121,8 +121,19 @@ STATIC_URL = 'static/'
 # Email
 # https://docs.djangoproject.com/en/6.1/topics/email/#topic-email-configuration
 
+
 MAILERS = {
-    'default': {
-        'BACKEND': 'django.core.mail.backends.console.EmailBackend',
+    "default": {
+        "BACKEND": "django.core.mail.backends.smtp.EmailBackend",
+        "OPTIONS": {
+            "host": "smtp.gmail.com",
+            "port": 587,
+            "username": "noreply.imran07@gmail.com",
+            "password": "rqlz tnjn wfun fmdg",
+            "use_tls": True,
+            "use_ssl": False,
+        },
     },
 }
+
+DEFAULT_FROM_EMAIL = "noreply.imran07@gmail.com"

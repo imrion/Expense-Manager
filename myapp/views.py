@@ -4,8 +4,15 @@ from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from .models import Categories, Expense
+from django.contrib.auth.tokens import default_token_generator
+from django.utils.http import urlsafe_base64_decode,urlsafe_base64_encode
+from django.utils.encoding import force_bytes
+from django.contrib.sites.shortcuts import get_current_site
+from django.template.loader import render_to_string
+from django.core.mail import send_mail
 from django.contrib import messages
 from django.db.models import Sum
+from django.conf import settings
 
 # Create your views here.
 
@@ -61,10 +68,56 @@ def user_register(request):
 
 
 def password_reset_request(request):
+    if request.method == "POST":
+        email = request.POST.get('email')
+        user = User.objects.filter(email=email).first()
+        if user:
+            token = default_token_generator.make_token(user)
+            uid = urlsafe_base64_encode(force_bytes(user.pk))
+            domain = get_current_site(request).domain
+            reset_link = f"http://{domain}/password_reset_confirm/{uid}/{token}"
+            # send mail
+            subject = "password_reset_confirm"
+            message = render_to_string("password_reset_email.html",{"reset_link":reset_link})
+            sent = send_mail(
+                subject,
+                message,
+                settings.DEFAULT_FROM_EMAIL,
+                [user.email],
+                fail_silently=False,
+            )
+            print("Email sent:", sent)
+            messages.success(request, "A password reset link has been set to your email")
+            return redirect('password_reset_done')
+        else:
+            messages.error(request, "User not found")
+
     return render(request, "password_reset.html")
 
 
-def password_reset_confirm(request):
+def password_reset_confirm(request, uidb64, token):
+    try:
+        uid = urlsafe_base64_decode(uidb64).decode()
+        user = User.objects.get(pk=uid)
+    except(user.DoesNotExist,ValueError,TypeError):
+        messages.error(request,"Invalid reset link")
+        return redirect('password_reset_request')
+
+    if not default_token_generator.check_token(user,token):
+        messages.error(request,"Invalid or expired reset link")
+        return redirect('password_reset_request')
+
+    if request.method == "POST":
+        new_password = request.POST.get('password1')
+        confirm_password = request.POST.get('password2')
+
+        if new_password != confirm_password:
+            messages.error(request,"Password not match")
+        else:
+            user.set_password(new_password)
+            user.save()
+            messages.success(request,"Passowrd reset successfully")
+            return redirect('password_reset_complete')
     return render(request, "password_reset_confirm.html")
 
 

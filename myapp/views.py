@@ -19,21 +19,35 @@ from django.conf import settings
 
 # user authintication
 def user_login(request):
+    password_reset_success = (
+        request.GET.get("password_reset") == "success"
+    )
+
+    context = {
+        "password_reset_success": password_reset_success
+    }
+
     if request.method == "POST":
-        # Getting data ...........................
+        # Getting data
         username = request.POST.get("username")
         password = request.POST.get("password")
-        user = authenticate(request, username=username, password=password)
-        # if authinticate then user.username, user.password create hobe
+
+        user = authenticate(
+            request,
+            username=username,
+            password=password
+        )
+
         if user is not None:
             login(request, user)
             return redirect("home")
         else:
-            messages.error(request, "Invalid username or passward")
-    return render(
-        request,
-        "login.html",
-    )
+            messages.error(
+                request,
+                "Invalid username or password"
+            )
+
+    return render(request, "login.html", context)
 
 
 @login_required(login_url="login")

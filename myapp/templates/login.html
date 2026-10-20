@@ -6,7 +6,11 @@
     <div class="col-md-5">
         <div class="card border-0 animated zoomIn  rounded-4">
             <div class="card-header bg-white border-0 text-center py-4">
-                <h3 class="fw-bold text-dark">Welcome Back</h3>
+                {% if password_reset_success %}
+                    <h3 class="fw-bold text-dark">Welcome Back</h3>
+                {% else %}
+                    <h3 class="fw-bold text-dark">Welcome</h3>
+                {% endif %}
                 <p class="text-muted mb-0">Login to your account</p>
             </div>
             <div class="card-body px-5">

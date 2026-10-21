@@ -19,6 +19,8 @@ from django.conf import settings
 
 # user authintication
 def user_login(request):
+    if request.user.is_authenticated:
+        return redirect("home")
     password_reset_success = (
         request.GET.get("password_reset") == "success"
     )

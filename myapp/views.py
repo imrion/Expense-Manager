@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.http import JsonResponse, HttpResponse
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
@@ -12,9 +12,25 @@ from django.template.loader import render_to_string
 from django.core.mail import send_mail
 from django.contrib import messages
 from django.db.models import Sum
+from django.db.models import Q, Count
 from django.conf import settings
+from django.utils import timezone
+from django import forms
+from django.core.exceptions import ValidationError
+from decimal import Decimal
 
 # Create your views here.
+
+
+def _clean_expense_amount(value):
+    try:
+        return forms.DecimalField(
+            max_digits=10,
+            decimal_places=2,
+            min_value=Decimal("0.01"),
+        ).clean(value)
+    except ValidationError:
+        return None
 
 
 # user authintication
@@ -150,41 +166,112 @@ def password_reset_complete(request):
 # base template
 @login_required(login_url="login")
 def home(request):
+    today = timezone.localdate()
+    all_expenses = Expense.objects.filter(user=request.user)
+    expenses = all_expenses
+    categories = Categories.objects.filter(Q(user__isnull=True) | Q(user=request.user))
+    search = request.GET.get("q", "").strip()
+    category_id = request.GET.get("category", "")
+    month = request.GET.get("month")
+    if month is None:
+        month = today.strftime("%Y-%m")
+    if search:
+        expenses = expenses.filter(Q(description__icontains=search) | Q(category__name__icontains=search))
+    if category_id.isdigit() and categories.filter(id=int(category_id)).exists():
+        expenses = expenses.filter(category_id=int(category_id))
+    else:
+        category_id = ""
+    if not month:
+        month_label = "All time"
+    elif len(month) == 7 and month[4] == "-" and month[:4].isdigit() and month[5:].isdigit():
+        year, month_number = map(int, month.split("-"))
+        if 1 <= year <= 9999 and 1 <= month_number <= 12:
+            expenses = expenses.filter(date__year=year, date__month=month_number)
+            month_label = timezone.datetime(year, month_number, 1).strftime("%B %Y")
+        else:
+            month = ""
+            month_label = "All time"
+    else:
+        month = ""
+        month_label = "All time"
+    month_expenses = expenses
     result = (
-        Expense.objects.filter(user=request.user)
+        expenses
         .values("category__name")
         .annotate(total=Sum("amount"))
+        .order_by("-total")
     )
-    grand_total = Expense.objects.filter(
-        user=request.user
-    ).aggregate(total=Sum("amount"))["total"] or 0
+    grand_total = all_expenses.aggregate(total=Sum("amount"))["total"] or 0
+    month_total = month_expenses.aggregate(total=Sum("amount"))["total"] or 0
+    month_count = month_expenses.count()
+    recent_expenses = expenses.select_related("category").order_by("-date", "-id")[:5]
     context = {
         "result": result,
         "grand_total": grand_total,
+        "month_total": month_total,
+        "month_count": month_count,
+        "recent_expenses": recent_expenses,
+        "category_count": result.count(),
+        "month_label": month_label,
+        "categories": categories,
+        "search": search,
+        "selected_category": category_id,
+        "selected_month": month,
+        "has_filters": bool(search or category_id or not month or month != today.strftime("%Y-%m")),
     }
     return render(request, "home.html", context)
 
 
 @login_required(login_url="login")
 def expense_list(request):
+    data = Expense.objects.filter(user=request.user)
+    search = request.GET.get("q", "").strip()
+    category_id = request.GET.get("category", "")
+    month = request.GET.get("month", "")
+    if search:
+        data = data.filter(Q(description__icontains=search) | Q(category__name__icontains=search))
+    if category_id.isdigit():
+        data = data.filter(category_id=int(category_id))
+    if len(month) == 7 and month[4] == "-" and month[:4].isdigit() and month[5:].isdigit():
+        year, month_number = map(int, month.split("-"))
+        if 1 <= year <= 9999 and 1 <= month_number <= 12:
+            data = data.filter(date__year=year, date__month=month_number)
     data = (
-        Expense.objects.filter(user=request.user)
+        data
         .select_related("category")
-        .order_by("-date")
+        .order_by("-date", "-id")
     )
-    context = {"data": data}
+    context = {
+        "data": data,
+        "categories": Categories.objects.filter(Q(user__isnull=True) | Q(user=request.user)).order_by("name"),
+        "search": search,
+        "selected_category": category_id,
+        "selected_month": month,
+        "filtered_total": data.aggregate(total=Sum("amount"))["total"] or 0,
+        "filtered_count": data.count(),
+        "has_filters": bool(search or category_id or month),
+    }
     return render(request, "expense_list.html", context)
 
 
 @login_required(login_url="login")
 def expense_create(request):
-    category = Categories.objects.all()
+    category = Categories.objects.filter(Q(user__isnull=True) | Q(user=request.user))
     if request.method == "POST":
         category_id = request.POST.get("category")
-        amount = request.POST.get("amount")
-        description = request.POST.get("description")
+        amount = _clean_expense_amount(request.POST.get("amount"))
+        description = request.POST.get("description", "").strip()
         if not category_id:
-            messages.error(request, "please select a category")
+            messages.error(request, "Please select a category")
+            return redirect("expense_create")
+        if amount is None:
+            messages.error(request, "Enter an amount greater than zero with up to two decimal places.")
+            return redirect("expense_create")
+        if not description:
+            messages.error(request, "Please add a description")
+            return redirect("expense_create")
+        if not category.filter(id=category_id).exists():
+            messages.error(request, "Please choose one of your available categories")
             return redirect("expense_create")
         Expense.objects.create(
             user=request.user,
@@ -200,24 +287,28 @@ def expense_create(request):
 
 @login_required(login_url="login")
 def expense_update(request, expense_id):
-    data = Expense.objects.get(user = request.user, id=expense_id)
+    data = get_object_or_404(Expense, user=request.user, id=expense_id)
     if request.method == "POST":
         category_id = request.POST.get('category')
-        amount = request.POST.get('amount')
-        description = request.POST.get('description')
+        amount = _clean_expense_amount(request.POST.get('amount'))
+        description = request.POST.get('description', '').strip()
 
         if not category_id:
             messages.error(request, "Please select a category")
             return redirect("expense_update", expense_id=data.id)
 
-        if not amount:
-            messages.error(request, "Please add amount")
+        if amount is None:
+            messages.error(request, "Enter an amount greater than zero with up to two decimal places.")
             return redirect("expense_update", expense_id=data.id)
 
         if not description:
             messages.error(request, "Please add description")
             return redirect("expense_update", expense_id=data.id)
 
+        available_categories = Categories.objects.filter(Q(user__isnull=True) | Q(user=request.user))
+        if not available_categories.filter(id=category_id).exists():
+            messages.error(request, "Please choose one of your available categories")
+            return redirect("expense_update", expense_id=data.id)
         data.category_id=category_id
         data.amount= amount
         data.description = description
@@ -227,18 +318,72 @@ def expense_update(request, expense_id):
         return redirect("expense_list")
         
         
-    category = Categories.objects.all()
-    expense = Expense.objects.get(user=request.user, id=expense_id)
+    category = Categories.objects.filter(Q(user__isnull=True) | Q(user=request.user))
+    expense = data
     context = {"category": category, "expense": expense}
     return render(request, "expense_form.html", context)
 
 
 @login_required(login_url="login")
 def expense_delete(request, expense_id):
-    data = Expense.objects.get(user=request.user, id=expense_id)
+    data = get_object_or_404(Expense, user=request.user, id=expense_id)
     if request.method == "POST":
         data.delete()
         messages.success(request, "Expense delete successfully")
         return redirect("expense_list")
     context = {"data": data}
     return render(request, "expense_confirm_delete.html", context)
+
+
+@login_required(login_url="login")
+def profile(request):
+    if request.method == "POST":
+        username = request.POST.get("username", "").strip()
+        email = request.POST.get("email", "").strip()
+        first_name = request.POST.get("first_name", "").strip()
+        last_name = request.POST.get("last_name", "").strip()
+        if not username or not email:
+            messages.error(request, "Username and email are required.")
+        elif User.objects.filter(username__iexact=username).exclude(pk=request.user.pk).exists():
+            messages.error(request, "That username is already in use.")
+        elif User.objects.filter(email__iexact=email).exclude(pk=request.user.pk).exists():
+            messages.error(request, "That email is already in use.")
+        else:
+            request.user.username = username
+            request.user.email = email
+            request.user.first_name = first_name
+            request.user.last_name = last_name
+            request.user.save()
+            messages.success(request, "Your profile has been updated.")
+            return redirect("profile")
+    return render(request, "profile.html")
+
+
+@login_required(login_url="login")
+def category_list(request):
+    if request.method == "POST":
+        name = request.POST.get("name", "").strip()
+        if not name:
+            messages.error(request, "Enter a category name.")
+        elif len(name) > 100:
+            messages.error(request, "Category names must be 100 characters or fewer.")
+        elif Categories.objects.filter(user=request.user, name__iexact=name).exists():
+            messages.error(request, "You already have a category with that name.")
+        else:
+            Categories.objects.create(user=request.user, name=name)
+            messages.success(request, f"{name} category created.")
+            return redirect("category_list")
+    context = {
+        "categories": Categories.objects.filter(Q(user__isnull=True) | Q(user=request.user)),
+        "custom_categories": Categories.objects.filter(user=request.user),
+    }
+    return render(request, "category_list.html", context)
+
+
+@login_required(login_url="login")
+def category_delete(request, category_id):
+    category = get_object_or_404(Categories, id=category_id, user=request.user)
+    if request.method == "POST":
+        category.delete()
+        messages.success(request, "Category deleted. Existing expenses were kept without a category.")
+    return redirect("category_list")

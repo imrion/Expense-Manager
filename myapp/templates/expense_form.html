@@ -1,61 +1,14 @@
 {% extends "base.html" %}
 {% block content %}
-
-<div class="container d-flex justify-content-center">
-    <div class="col-md-6">
-        <div class="card animated zoomIn border-0  rounded-3 p-5">
-            <h2 class="fw-bold text-center text-dark">
-                {% if expense %}Update Expense{% else %}Add Expense{% endif %}
-            </h2>
-
-            {% if messages%}
-            {% for message in messages%}
-                {% if message.tags == "error" %}
-                    <div class="alert alert-danger rounded-3">{{ message }}</div>
-            {% endif %}
-                {% if message.tags == "success" %}
-                    <div class="alert alert-success rounded-3">{{ message }}</div>
-                {% endif %}
-            {% endfor %}
-            {% endif %}
-
-            <form method="POST" class="d-grid gap-3">
-                
-                {% csrf_token %}
-                <div>
-                    <label class="form-label fw-medium">Category</label>
-                    <select name="category" class="form-select rounded-3" >
-                        <option value="">Select Category</option>
-                        {% for item in category %}
-                              <option value="{{ item.id }}" {% if item.id == expense.category_id %}selected{% endif %}>
-                                {{ item.name }}
-                            </option>
-                        {% endfor %}
-                            
-                        
-                    </select>
-                </div>
-                
-                <div>
-                    <label class="form-label fw-medium">Amount</label>
-                    <input type="number" name="amount" class="form-control rounded-3" 
-                        value="{{ expense.amount|default:'' }}" required>
-                </div>
-
-                <div>
-                    <label class="form-label fw-medium">Description</label>
-                    <textarea rows="4" name="description" class="form-control rounded-3">{{ expense.description|default:'' }}</textarea>
-                </div>
-
-                <div class="d-grid gap-2">
-                    <button type="submit" class="btn btn-dark rounded-3  fw-medium">
-                        {% if expense %}Update{% else %}Save{% endif %}
-                    </button>
-                    <a href="{% url 'expense_list' %}" class="btn btn-outline-dark rounded-3  fw-medium">Cancel</a>
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
-
+<section class="card form-card">
+  <span class="eyebrow">TRANSACTION DETAILS</span>
+  <h1>{% if expense %}Edit expense{% else %}Add an expense{% endif %}</h1>
+  {% for message in messages %}<div class="alert {% if message.tags == 'error' %}alert-danger{% else %}alert-success{% endif %}">{{ message }}</div>{% endfor %}
+  <form method="post" class="d-grid gap-3">{% csrf_token %}
+    <div><label for="expenseCategory" class="form-label">Category</label><div class="category-select-row"><select id="expenseCategory" name="category" class="form-select" required><option value="">Choose a category</option>{% for item in category %}<option value="{{ item.id }}" {% if item.id == expense.category_id %}selected{% endif %}>{{ item.name }}{% if item.user_id %} · Custom{% endif %}</option>{% endfor %}</select><a class="btn btn-outline-dark" href="{% url 'category_list' %}" title="Create a category">＋ Category</a></div></div>
+    <div><label for="expenseAmount" class="form-label">Amount</label><div class="amount-input-wrap"><span>$</span><input id="expenseAmount" type="number" name="amount" class="form-control" value="{{ expense.amount|default:'' }}" min="0.01" step="0.01" placeholder="0.00" required></div></div>
+    <div><label for="expenseDescription" class="form-label">Description</label><textarea id="expenseDescription" rows="4" name="description" class="form-control" placeholder="What was this expense for?" required>{{ expense.description|default:'' }}</textarea></div>
+    <div class="form-actions"><a href="{% url 'expense_list' %}" class="btn btn-outline-dark">Cancel</a><button type="submit" class="btn btn-dark">{% if expense %}Save changes{% else %}Save expense{% endif %}</button></div>
+  </form>
+</section>
 {% endblock %}

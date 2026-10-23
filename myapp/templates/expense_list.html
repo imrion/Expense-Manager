@@ -1,64 +1,32 @@
 {% extends "base.html" %}
 {% block content %}
+<section class="page-heading">
+  <div><span class="eyebrow">YOUR ACTIVITY</span><h1>Transactions</h1><p>Search, filter and manage your expenses.</p></div>
+  <a href="{% url 'expense_create' %}" class="btn btn-dark">＋ Add expense</a>
+</section>
 
+{% if messages %}{% for message in messages %}<div class="alert {% if message.tags == 'error' %}alert-danger{% else %}alert-success{% endif %} mb-3">{{ message }}</div>{% endfor %}{% endif %}
 
-<div class="container mt-5">
-    <div class="card border-0  rounded-4 p-4">
-        <h4 class="fw-bold text-dark mb-4">Expense List</h4>
-        
-        {% if messages%}
-            {% for message in messages%}
-                {% if message.tags == "error" %}
-                    <div class="alert alert-danger rounded-3">{{ message }}</div>
-            {% endif %}
-                {% if message.tags == "success" %}
-                    <div class="alert alert-success rounded-3">{{ message }}</div>
-                {% endif %}
-            {% endfor %}
-        {% endif %}
-
-        {% if data %}
-        <div class="table-responsive">
-            <table class="table table-hover align-middle rounded-3">
-                <thead class="bg-dark text-white">
-                    <tr>
-                        <th>Date</th>
-                        <th>Category</th>
-                        <th>Amount</th>
-                        <th>Description</th>
-                        <th class="text-center">Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    
-                    {% for expenses in data  %}
-                        <tr class="border-bottom animated slideInUp">
-                            <td>{{ expenses.date }}</td>
-                            <td>{{ expenses.category.name | default:"Uncategorised" }}</td>
-                            <td>${{ expenses.amount|floatformat:2 }}</td>
-                            <td>{{ expenses.description }}</td>
-                            <td class="text-center">
-                                <a href="{% url 'expense_update' expenses.id %}" class="btn btn-sm btn-primary rounded-3 ">Edit</a>
-                                <a href="{% url 'expense_delete' expenses.id %}" class="btn btn-sm btn-danger rounded-3 ">Delete</a>
-                            </td>
-                        </tr>
-                    {% endfor %}
-                    {% else %}
-                        <tr>
-                            <td colspan="5" class="text-center text-muted">No expenses found.</td>
-                        </tr>
-                    {% endif %}
-                    
-                        
-                    
-                </tbody>
-            </table>
-        </div>
-
-        <div class="d-flex justify-content-end mt-3">
-            <a href="{% url 'expense_create' %}" class="btn btn-dark px-4 py-2 rounded-3 fw-medium">Add Expense</a>
-        </div>
-    </div>
-</div>
-
+<section class="card transactions-panel">
+  <form method="get" class="filter-bar">
+    <label class="search-field"><span aria-hidden="true">⌕</span><input type="search" name="q" value="{{ search }}" placeholder="Search description or category" aria-label="Search expenses"></label>
+    <select name="category" class="form-select filter-select" aria-label="Filter by category"><option value="">All categories</option>{% for category in categories %}<option value="{{ category.id }}" {% if selected_category == category.id|stringformat:"s" %}selected{% endif %}>{{ category.name }}</option>{% endfor %}</select>
+    <label class="month-field"><span>Month</span><input type="month" name="month" value="{{ selected_month }}" class="form-control" aria-label="Filter by month"></label>
+    <button class="btn btn-dark" type="submit">Filter</button>
+    {% if has_filters %}<a href="{% url 'expense_list' %}" class="clear-filter">Clear</a>{% endif %}
+  </form>
+  <div class="results-summary"><span><strong>{{ filtered_count }}</strong> matching transaction{{ filtered_count|pluralize }}</span><span>Total <strong>${{ filtered_total|floatformat:2 }}</strong></span></div>
+  <div class="table-responsive">
+    <table class="table table-hover align-middle transactions-table">
+      <thead><tr><th>Date</th><th>Category</th><th>Description</th><th class="text-end">Amount</th><th class="text-end">Actions</th></tr></thead>
+      <tbody>
+        {% for expense in data %}
+          <tr><td class="date-cell">{{ expense.date|date:"M j, Y" }}</td><td><span class="category-pill">{{ expense.category.name|default:"Uncategorised" }}</span></td><td class="description-cell">{{ expense.description|default:"—" }}</td><td class="amount-cell">${{ expense.amount|floatformat:2 }}</td><td class="text-end action-cell"><a href="{% url 'expense_update' expense.id %}" class="action-link">Edit</a><a href="{% url 'expense_delete' expense.id %}" class="action-link action-delete">Delete</a></td></tr>
+        {% empty %}
+          <tr><td colspan="5"><div class="empty-state table-empty"><span class="empty-icon">⌕</span><h3>{% if has_filters %}No matching expenses{% else %}No expenses yet{% endif %}</h3><p>{% if has_filters %}Try changing your search or filters.{% else %}Add your first transaction to start tracking your spending.{% endif %}</p>{% if has_filters %}<a href="{% url 'expense_list' %}" class="text-link">Clear filters</a>{% else %}<a href="{% url 'expense_create' %}" class="btn btn-dark">Add expense</a>{% endif %}</div></td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</section>
 {% endblock %}

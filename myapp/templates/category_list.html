@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="page-heading"><div><span class="eyebrow">MAKE IT YOURS</span><h1>Categories</h1><p>Organize spending your way with personal categories.</p></div><div class="category-heading-actions"><a href="{% url 'expense_create' %}" class="btn btn-dark">＋ Add expense</a><span class="category-hero-icon" aria-hidden="true">◈</span></div></section>
+{% for message in messages %}<div class="alert {% if message.tags == 'error' %}alert-danger{% else %}alert-success{% endif %}">{{ message }}</div>{% endfor %}
+<div class="category-management-grid">
+  <section class="card category-create-card"><span class="eyebrow">NEW CATEGORY</span><h2>Create a category</h2><p>Custom categories are private to your account.</p><form method="post" class="category-create-form">{% csrf_token %}<label for="categoryName" class="form-label">Category name</label><input id="categoryName" class="form-control" name="name" maxlength="100" placeholder="e.g. Coffee, Books, Pets" required><button class="btn btn-dark" type="submit">＋ Create category</button></form><div class="category-note"><span>✦</span> You can use your categories when adding or editing expenses.</div></section>
+  <section class="card category-manage-card"><div class="panel-heading"><div><span class="eyebrow">YOUR ORGANIZER</span><h2>Available categories</h2></div><span class="category-count">{{ categories|length }}</span></div>
+    <div class="managed-category-list">
+      {% for category in categories %}<div class="managed-category"><span class="managed-category-icon">{{ category.name|slice:":1"|upper }}</span><span class="managed-category-name">{{ category.name }}{% if not category.user_id %}<small>Default</small>{% else %}<small>Your category</small>{% endif %}</span>{% if category.user_id %}<form method="post" action="{% url 'category_delete' category.id %}" onsubmit="return confirm('Delete {{ category.name|escapejs }}? Existing expenses will be kept.');">{% csrf_token %}<button class="icon-delete" aria-label="Delete {{ category.name }}" title="Delete category">×</button></form>{% else %}<span class="locked-category" title="Default category">•</span>{% endif %}</div>{% empty %}<div class="empty-state"><p>No categories yet. Create your first one.</p></div>{% endfor %}
+    </div>
+  </section>
+</div>
+{% endblock %}

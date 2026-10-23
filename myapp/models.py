@@ -4,6 +4,10 @@ from django.contrib.auth.models import User
 # Create your models here.
 class Categories(models.Model):
     name = models.CharField(100,null=False,blank=False)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True, related_name="expense_categories")
+
+    class Meta:
+        ordering = ["name"]
 
     def __str__(self):
         return self.name
@@ -16,4 +20,4 @@ class Expense(models.Model):
     date = models.DateField(auto_now_add=True)
 
     def __str__(self):
-        return
+        return f"{self.description} — {self.amount}"

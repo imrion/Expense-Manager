@@ -5,8 +5,8 @@ from .models import Categories, Expense
 
 @admin.register(Categories)
 class categoryadmin(admin.ModelAdmin):
-    list_display =['id','name']
-    search_fields = ['name']
+    list_display =['id','name','user']
+    search_fields = ['name','user__username']
     ordering = ['name']
 
 @admin.register(Expense)

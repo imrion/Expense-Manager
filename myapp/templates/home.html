@@ -1,44 +1,52 @@
 {% extends "base.html" %}
-
 {% block content %}
+<section class="page-heading dashboard-heading">
+  <div><span class="eyebrow">YOUR MONEY, IN FOCUS</span><h1>Good to see you, {{ user.first_name|default:user.username }}.</h1><p>A clear picture of where your money is going.</p></div>
+  <a href="{% url 'expense_create' %}" class="btn btn-dark">＋ Add expense</a>
+</section>
 
-<div class="container mt-5">
-    <div class="card border-0 rounded-4 p-4">
-        <h4 class=" text-dark mb-4">Total Expenses by Category</h4>
+<form method="get" class="card dashboard-filters">
+  <div class="dashboard-filter-title"><span class="filter-sparkle">✦</span><span><strong>Explore your spending</strong><small>Filter every insight on this page</small></span></div>
+  <label class="search-field"><span aria-hidden="true">⌕</span><input type="search" name="q" value="{{ search }}" placeholder="Search expenses" aria-label="Search expenses"></label>
+  <select name="category" class="form-select filter-select" aria-label="Filter by category"><option value="">All categories</option>{% for category in categories %}<option value="{{ category.id }}" {% if selected_category == category.id|stringformat:"s" %}selected{% endif %}>{{ category.name }}</option>{% endfor %}</select>
+  <label class="month-field"><span>Month</span><input type="month" name="month" value="{{ selected_month }}" class="form-control" aria-label="Filter by month"></label>
+  <button class="btn btn-dark" type="submit">Apply filters</button>
+  {% if has_filters %}<a href="{% url 'home' %}" class="clear-filter">Reset</a>{% endif %}
+</form>
 
-        
-            {% if result %}
-            <div class="table-responsive">
-                <table class="table table-hover align-middle rounded-3">
-                    <thead class="bg-dark text-white">
-                        <tr>
-                            <th>Category</th>
-                            <th class="text-end">Total Expense ($)</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for item in result %}
-                            <tr class="border-bottom animated slideInUp ">
-                                <td>{{ item.category__name | default:"Uncategorised" }}</td>
-                                <td class="text-end">${{ item.total|floatformat:2 }}</td>
-                            </tr>
-                        {% endfor %}
-                            <tr>
-                                <td class="fw-bold">Grand Total</td>
-                                <td class="text-end fw-bold">${{ grand_total|floatformat:2 }}</td>
-                            </tr>
-                    </tbody>
-                </table>
-            </div>
-            {% else %}
-            <p class="text-muted text-center">No expenses found.</p>
-            {% endif %}
-            
-            
+<section class="stats-grid" aria-label="Expense summary">
+  <article class="stat-card stat-primary"><span class="stat-icon">↗</span><span class="stat-label">Total in this view</span><strong>${{ month_total|floatformat:2 }}</strong><small>{{ month_label }}</small></article>
+  <article class="stat-card"><span class="stat-icon stat-icon-teal">＃</span><span class="stat-label">Transactions in this view</span><strong>{{ month_count }}</strong><small>Matching your filters</small></article>
+  <article class="stat-card"><span class="stat-icon stat-icon-amber">◈</span><span class="stat-label">All-time spending</span><strong>${{ grand_total|floatformat:2 }}</strong><small>Across your account</small></article>
+  <article class="stat-card"><span class="stat-icon stat-icon-blue">▦</span><span class="stat-label">Categories used</span><strong>{{ category_count }}</strong><small>With recorded spending</small></article>
+</section>
 
-            <div class="d-flex justify-content-end mt-3">
-                <a href="{% url 'expense_create' %}" class="btn btn-dark px-4 py-2 rounded-3  fw-medium">Add Expense</a>
-            </div>
-    </div>
+<div class="dashboard-grid">
+  <section class="card dashboard-panel">
+    <div class="panel-heading"><div><span class="eyebrow">BREAKDOWN</span><h2>Spending by category</h2></div><span class="panel-caption">{{ month_label }}</span></div>
+    {% if result %}
+      <div class="category-list">
+        {% for item in result %}
+          <div class="category-row"><div class="category-meta"><span>{{ item.category__name|default:"Uncategorised" }}</span><strong>${{ item.total|floatformat:2 }}</strong></div><div class="category-track"><span style="width:{% widthratio item.total month_total 100 %}%"></span></div></div>
+        {% endfor %}
+      </div>
+    {% else %}
+      <div class="empty-state"><span class="empty-icon">✦</span><h3>Your overview starts here</h3><p>Add your first expense and your category breakdown will appear here.</p><a href="{% url 'expense_create' %}" class="btn btn-dark">Add your first expense</a></div>
+    {% endif %}
+  </section>
+
+  <section class="card dashboard-panel recent-panel">
+    <div class="panel-heading"><div><span class="eyebrow">LATEST ACTIVITY</span><h2>Recent expenses</h2></div><a href="{% url 'expense_list' %}" class="text-link">View all →</a></div>
+    {% if recent_expenses %}
+      <div class="recent-list">
+        {% for expense in recent_expenses %}
+          <div class="recent-item"><span class="recent-mark">{{ expense.category.name|default:"•"|slice:":1"|upper }}</span><span class="recent-copy"><strong>{{ expense.description|default:"Expense"|truncatechars:28 }}</strong><small>{{ expense.category.name|default:"Uncategorised" }} · {{ expense.date|date:"M j" }}</small></span><b>${{ expense.amount|floatformat:2 }}</b></div>
+        {% endfor %}
+      </div>
+      <a href="{% url 'expense_list' %}" class="btn btn-outline-dark w-100 mt-3">See all transactions</a>
+    {% else %}
+      <div class="empty-state compact-empty"><p>Your recent transactions will show up here.</p></div>
+    {% endif %}
+  </section>
 </div>
 {% endblock %}

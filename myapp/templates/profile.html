@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="page-heading"><div><span class="eyebrow">ACCOUNT SETTINGS</span><h1>Your profile</h1><p>Keep your account details up to date.</p></div><div class="profile-avatar-large">{{ user.first_name|default:user.username|slice:":1"|upper }}</div></section>
+<section class="card settings-card">
+  {% for message in messages %}<div class="alert {% if message.tags == 'error' %}alert-danger{% else %}alert-success{% endif %}">{{ message }}</div>{% endfor %}
+  <form method="post" class="settings-form">{% csrf_token %}
+    <div class="settings-intro"><span class="eyebrow">PERSONAL INFORMATION</span><h2>Profile details</h2><p>Your name is used to personalize your Moneta workspace.</p></div>
+    <div class="profile-fields"><div><label class="form-label">First name</label><input class="form-control" name="first_name" value="{{ user.first_name }}" placeholder="First name" autocomplete="given-name"></div><div><label class="form-label">Last name</label><input class="form-control" name="last_name" value="{{ user.last_name }}" placeholder="Last name" autocomplete="family-name"></div><div><label class="form-label">Username</label><input class="form-control" name="username" value="{{ user.username }}" required autocomplete="username"></div><div><label class="form-label">Email address</label><input class="form-control" type="email" name="email" value="{{ user.email }}" required autocomplete="email"></div></div>
+    <div class="settings-actions"><a href="{% url 'home' %}" class="btn btn-outline-dark">Cancel</a><button class="btn btn-dark" type="submit">Save changes</button></div>
+  </form>
+</section>
+{% endblock %}
